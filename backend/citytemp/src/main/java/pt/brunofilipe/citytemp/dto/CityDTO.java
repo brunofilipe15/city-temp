@@ -10,6 +10,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class CityDTO {
-    UUID id;
+    Long id;
     String name;
 }
