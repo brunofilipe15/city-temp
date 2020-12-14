@@ -1,5 +1,12 @@
+
 CREATE TABLE cities (
-  id INT AUTO_INCREMENT  PRIMARY KEY,
+  id BIGINT AUTO_INCREMENT  PRIMARY KEY,
   name VARCHAR(250) NOT NULL
 );
-INSERT INTO cities (name) VALUES ('Aliko'),  ('Bill'),  ('Folrunsho');
+
+CREATE TABLE temperatures (
+  id BIGINT AUTO_INCREMENT  PRIMARY KEY,
+  min_temp FLOAT NOT NULL,
+  max_temp FLOAT NOT NULL,
+  date TIMESTAMP WITH TIME ZONE NOT NULL
+);

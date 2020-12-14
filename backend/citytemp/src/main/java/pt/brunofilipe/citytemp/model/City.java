@@ -7,7 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @Getter
@@ -24,6 +27,4 @@ public class City {
 
     @NotNull
     String name;
-
-    //List<Temperature> temperatures;
 }
