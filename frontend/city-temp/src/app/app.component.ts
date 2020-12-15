@@ -172,10 +172,9 @@ export class AppComponent implements OnInit {
       fill: {
         type: 'gradient',
         gradient: {
-          opacityFrom: 0.1,
-          opacityTo: 0.9,
+          opacityFrom: 1,
+          opacityTo: 0.1,
         },
-        
       },
       xaxis: {
         type: "datetime",

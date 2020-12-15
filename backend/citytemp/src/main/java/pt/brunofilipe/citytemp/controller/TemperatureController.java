@@ -12,6 +12,8 @@ import pt.brunofilipe.citytemp.model.Temperature;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -47,9 +49,16 @@ public class TemperatureController {
         return TemperatureDTO.builder()
                 .id(temperature.getId())
                 .tempCelsius(temperature.getTemp())
-                .tempFahrenheit(((temperature.getTemp()*9)/5)+32)
+                .tempFahrenheit((round((temperature.getTemp()*9)/5)+32))
                 .localDate(temperature.getDate())
                 .build();
     }
+
+    private Float round(Float value) {
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.floatValue();
+    }
+
 
 }

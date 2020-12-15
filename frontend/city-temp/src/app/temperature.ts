@@ -1,6 +1,6 @@
 export class Temperature {
     id: number;
-    tempCelsius: any; //TODO: Ver o float
+    tempCelsius: any;
     tempFahrenheit: any;
     localDate: Date;
 }

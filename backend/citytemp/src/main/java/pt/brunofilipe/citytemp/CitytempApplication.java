@@ -55,15 +55,11 @@ public class CitytempApplication {
 	}
 
 	private void createTemperatures(City city, TemperatureRepository temperatureRepository) {
-		float minMin = 0F;
-		float maxMin = 30F;
-
-
 		for(int dias = 0; dias < 5; dias++) { // Previsão para 5 dias
 			for(int horas = 0; horas < 24; horas++) {
 				temperatureRepository.save(Temperature.builder().city(city)
 					.date(LocalDateTime.now(ZoneOffset.UTC).plusDays(dias).plusHours(horas))
-					.temp(round(minMin + new Random().nextFloat() * (minMin - maxMin)))
+					.temp(round(40 + new Random().nextFloat() * (40 - 65)))
 					.build());
 			}
 		}
