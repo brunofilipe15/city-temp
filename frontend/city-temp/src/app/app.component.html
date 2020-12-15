@@ -1,35 +1,61 @@
-<div class="container h-100">
-  <div class="row align-items-center h-100">
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 text-center" style="margin-top: 25px;">
+      <p-dropdown [options]="citiesOptions" [appendTo]="'body'" [(ngModel)]="city" (onChange)="onChangeCity($event)"></p-dropdown>
+    </div>
+    <div class="col-sm-6 text-center" style="margin-top: 25px;">
+      <p-selectButton [options]="unitOfTemperature" [(ngModel)]="unitOfTemperatureSelect" optionLabel="name" optionValue="value" (onChange)="onChangeUnitOfTemperature($event)"></p-selectButton>
+    </div>
+  </div>
+  <div class="row align-items-center h-100" style="margin-top: 25px;">
     <div class="col-10 mx-auto">
-      <div class="jumbotron">
-        <div>
+      <div class="jumbotron shadow-lg" style="padding-top: 16px; padding-bottom: 16px;">
+          <div class="row bg-white shadow-sm" style="margin-bottom: 15px;">
+            <div class="row">
+              <div class="col-md">
+              </div>
+            </div>
+            <div class="col-md-12 text-center" style="padding: 7px;"> 
+                <h4>33ºC</h4> 
+                <h6>15:18 15 December</h6> 
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <h6>Number Of Days
+              <p-dropdown [options]="numberOfDaysOptions" [(ngModel)]="numberOfDaysSelect" (onChange)="onChangeNumberOfDays($event)"></p-dropdown>
+              </h6>
+            </div>
+          </div>
           <div style="display: block">
-            <div id="wrapper">
+            <div id="wrapper" *ngIf="chartReady">
               <div id="chart-line">
                 <apx-chart
-                  [series]="chartOptions1.series"
-                  [chart]="chartOptions1.chart"
-                  [xaxis]="chartOptions1.xaxis"
-                  [dataLabels]="chartOptions1.dataLabels"
-                  [colors]="chartOptions1.colors"
-                  [fill]="chartOptions1.fill"
-                  [markers]="chartOptions1.markers"
-                  [stroke]="chartOptions1.stroke"
+                  [series]="chartBig.series"
+                  [chart]="chartBig.chart"
+                  [xaxis]="chartBig.xaxis"
+                  [dataLabels]="chartBig.dataLabels"
+                  [colors]="chartBig.colors"
+                  [fill]="chartBig.fill"
+                  [markers]="chartBig.markers"
+                  [stroke]="chartBig.stroke"
                 ></apx-chart>
               </div>
               <div id="chart-line2">
                 <apx-chart
-                  [series]="chartOptions2.series"
-                  [chart]="chartOptions2.chart"
-                  [xaxis]="chartOptions2.xaxis"
-                  [colors]="chartOptions2.colors"
-                  [fill]="chartOptions2.fill"
-                  [yaxis]="chartOptions2.yaxis"
+                  [series]="chartSmall.series"
+                  [chart]="chartSmall.chart"
+                  [xaxis]="chartSmall.xaxis"
+                  [colors]="chartSmall.colors"
+                  [fill]="chartSmall.fill"
+                  [yaxis]="chartSmall.yaxis"
+                  [legend]="chartSmall.legend"
                 ></apx-chart>
               </div>
             </div>
           </div>
-        </div>
+
       </div>
     </div>
   </div>

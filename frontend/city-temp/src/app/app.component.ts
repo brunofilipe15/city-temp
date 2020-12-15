@@ -9,8 +9,12 @@ import {
   ApexYAxis,
   ApexFill,
   ApexMarkers,
-  ApexStroke
+  ApexStroke,
+  ApexLegend
 } from "ng-apexcharts";
+import { Temperature } from './temperature';
+import { SelectItem } from 'primeng/api';
+import { City } from './city';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -22,7 +26,13 @@ export type ChartOptions = {
   stroke: ApexStroke;
   markers: ApexMarkers;
   colors: string[];
+  legend: ApexLegend;
 };
+
+export enum unitOfTemperatureEnum {
+  CELSIUS = 0,
+  FAHRENHEIT = 1
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -31,28 +41,96 @@ export type ChartOptions = {
 export class AppComponent implements OnInit {
 
   @ViewChild("chart") chart: ChartComponent;
-  public chartOptions1: Partial<ChartOptions>;
-  public chartOptions2: Partial<ChartOptions>;
+  public chartBig: Partial<ChartOptions>;
+  public chartSmall: Partial<ChartOptions>;
+
+  temperatures: Temperature[];
+  chartReady = false;
+  numberOfDaysOptions = [
+    {label: '1', value: 1},
+    {label: '2', value: 2},
+    {label: '3', value: 3},
+    {label: '4', value: 4},
+    {label: '5', value: 5}
+  ];
+  numberOfDaysSelect: SelectItem;
+  numberOfDays: number;
+
+  citiesOptions: SelectItem[] = [];
+  city: City;
+
+  unitOfTemperature = [
+    {name: 'Celsius', value: unitOfTemperatureEnum.CELSIUS},
+    {name: 'Fahrenheit', value: unitOfTemperatureEnum.FAHRENHEIT}
+  ];
+  unitOfTemperatureSelect: any;
 
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.chartOptions1 = {
+    this.apiService.getCities().subscribe(cities => {
+      cities.forEach(city => {
+        this.citiesOptions.push({label: city.name, value: city});
+      });
+      
+      this.unitOfTemperatureSelect = unitOfTemperatureEnum.CELSIUS;
+      this.city = this.citiesOptions[0].value;
+      this.numberOfDays = this.numberOfDaysOptions[0].value;
+      
+      this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
+    });
+  }
+
+  onChangeNumberOfDays(event) {
+    this.numberOfDays = event.value;
+    this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
+  }
+  
+  onChangeCity(event) {
+    this.city = event.value;
+    this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
+  }
+
+  onChangeUnitOfTemperature(event) {
+    this.unitOfTemperatureSelect = event.value;
+    this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
+  }
+
+  async createCharts(numberOfDays: number, cityId: number, unitOfTemperature: unitOfTemperatureEnum) {
+    this.chartReady = false;
+    let temperatureMinCelsius = [];
+    let temperatureMaxCelsius = [];
+    let temperatureMinFahrenheit = [];
+    let temperatureMaxFahrenheit = [];
+    let dates = [];
+    
+    this.temperatures = await this.apiService.getTemperatures(numberOfDays, cityId);
+    this.temperatures.forEach(temperature => {
+      let date = temperature.localDate;
+      dates.push(date);
+
+      temperatureMinCelsius.push([date, temperature.minTempCelsius]);
+      temperatureMaxCelsius.push([date, temperature.maxTempCelsius]);
+
+      temperatureMinFahrenheit.push([date, temperature.minTempFahrenheit]);
+      temperatureMaxFahrenheit.push([date, temperature.maxTempFahrenheit]);
+    });
+
+    this.chartBig = {
       series: [
         {
-          name: "series1",
-          data: this.generateDayWiseTimeSeries(
-            new Date("11 Feb 2017").getTime(),
-            185,
-            {
-              min: 30,
-              max: 90
-            }
-          )
+          name: "High",
+          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMaxCelsius : temperatureMaxFahrenheit,
+          color: "#FF0000"
+        },
+        {
+          name: "Low",
+          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMinCelsius : temperatureMinFahrenheit,
+          color: "#0000FF"
         }
       ],
       chart: {
-        id: "chart2",
+        id: "chartBig",
         type: "line",
         height: 230,
         toolbar: {
@@ -63,9 +141,6 @@ export class AppComponent implements OnInit {
       colors: ["#546E7A"],
       stroke: {
         width: 3
-      },
-      dataLabels: {
-        enabled: false
       },
       fill: {
         opacity: 1
@@ -78,33 +153,32 @@ export class AppComponent implements OnInit {
       }
     };
 
-    this.chartOptions2 = {
+    this.chartSmall = {
       series: [
         {
-          name: "series1",
-          data: this.generateDayWiseTimeSeries(
-            new Date("11 Feb 2017").getTime(),
-            185,
-            {
-              min: 30,
-              max: 90
-            }
-          )
+          name: "High",
+          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMaxCelsius : temperatureMaxFahrenheit,
+          color: "#FF0000"
+        },
+        {
+          name: "Low",
+          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMinCelsius : temperatureMinFahrenheit,
+          color: "#0000FF"
         }
       ],
       chart: {
-        id: "chart1",
+        id: "chartSmall",
         height: 130,
         type: "area",
         brush: {
-          target: "chart2",
+          target: "chartBig",
           enabled: true
         },
         selection: {
           enabled: true,
           xaxis: {
-            min: new Date("19 Jun 2017").getTime(),
-            max: new Date("14 Aug 2017").getTime()
+            min: new Date(dates[0]).getTime(),
+            max: new Date(dates[dates.length - 1]).getTime()
           }
         }
       },
@@ -124,23 +198,13 @@ export class AppComponent implements OnInit {
       },
       yaxis: {
         tickAmount: 2
+      },
+      legend: {
+        show: false
       }
     };
-  }
 
-  generateDayWiseTimeSeries(baseval, count, yrange) {
-    var i = 0;
-    var series = [];
-    while (i < count) {
-      var x = baseval;
-      var y =
-        Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-
-      series.push([x, y]);
-      baseval += 86400000;
-      i++;
-    }
-    return series;
+    this.chartReady = true;
   }
 
 }

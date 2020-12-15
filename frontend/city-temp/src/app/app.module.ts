@@ -7,6 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from './api.service';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     AppRoutingModule,
     BrowserAnimationsModule,
     NgApexchartsModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    DropdownModule,
+    SelectButtonModule
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]
