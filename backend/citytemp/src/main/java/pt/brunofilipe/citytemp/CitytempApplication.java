@@ -56,18 +56,15 @@ public class CitytempApplication {
 
 	private void createTemperatures(City city, TemperatureRepository temperatureRepository) {
 		float minMin = 0F;
-		float maxMin = 10F;
+		float maxMin = 30F;
 
-		float minMax = 19F;
-		float maxMax = 35F;
 
 		for(int dias = 0; dias < 5; dias++) { // Previsão para 5 dias
 			for(int horas = 0; horas < 24; horas++) {
 				temperatureRepository.save(Temperature.builder().city(city)
-						.date(LocalDateTime.now(ZoneOffset.UTC).plusDays(dias).plusHours(horas))
-						.minTemp(round(minMin + new Random().nextFloat() * (minMin - maxMin)))
-						.maxTemp(round(minMax + new Random().nextFloat() * (minMax - maxMax)))
-						.build());
+					.date(LocalDateTime.now(ZoneOffset.UTC).plusDays(dias).plusHours(horas))
+					.temp(round(minMin + new Random().nextFloat() * (minMin - maxMin)))
+					.build());
 			}
 		}
 	}

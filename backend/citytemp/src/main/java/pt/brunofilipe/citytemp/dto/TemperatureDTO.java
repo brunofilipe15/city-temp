@@ -11,9 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TemperatureDTO {
     Long id;
-    Float minTempCelsius;
-    Float maxTempCelsius;
-    Float minTempFahrenheit;
-    Float maxTempFahrenheit;
+    Float tempCelsius;
+    Float tempFahrenheit;
     LocalDateTime localDate;
 }

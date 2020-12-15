@@ -20,10 +20,7 @@ public class Temperature {
     Long id;
 
     @NotNull
-    Float minTemp;
-
-    @NotNull
-    Float maxTemp;
+    Float temp;
 
     @NotNull
     LocalDateTime date;

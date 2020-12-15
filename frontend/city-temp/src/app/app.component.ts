@@ -98,10 +98,8 @@ export class AppComponent implements OnInit {
 
   async createCharts(numberOfDays: number, cityId: number, unitOfTemperature: unitOfTemperatureEnum) {
     this.chartReady = false;
-    let temperatureMinCelsius = [];
-    let temperatureMaxCelsius = [];
-    let temperatureMinFahrenheit = [];
-    let temperatureMaxFahrenheit = [];
+    let temperatureCelsius = [];
+    let temperatureFahrenheit = [];
     let dates = [];
     
     this.temperatures = await this.apiService.getTemperatures(numberOfDays, cityId);
@@ -109,25 +107,17 @@ export class AppComponent implements OnInit {
       let date = temperature.localDate;
       dates.push(date);
 
-      temperatureMinCelsius.push([date, temperature.minTempCelsius]);
-      temperatureMaxCelsius.push([date, temperature.maxTempCelsius]);
-
-      temperatureMinFahrenheit.push([date, temperature.minTempFahrenheit]);
-      temperatureMaxFahrenheit.push([date, temperature.maxTempFahrenheit]);
+      temperatureCelsius.push([date, temperature.tempCelsius]);
+      temperatureFahrenheit.push([date, temperature.tempFahrenheit]);
     });
 
     this.chartBig = {
       series: [
         {
-          name: "High",
-          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMaxCelsius : temperatureMaxFahrenheit,
-          color: "#FF0000"
+          name: "Temperature",
+          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureCelsius : temperatureFahrenheit,
+          color: "#556CBA"
         },
-        {
-          name: "Low",
-          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMinCelsius : temperatureMinFahrenheit,
-          color: "#0000FF"
-        }
       ],
       chart: {
         id: "chartBig",
@@ -140,6 +130,7 @@ export class AppComponent implements OnInit {
       },
       colors: ["#546E7A"],
       stroke: {
+        curve: 'smooth',
         width: 3
       },
       fill: {
@@ -156,15 +147,10 @@ export class AppComponent implements OnInit {
     this.chartSmall = {
       series: [
         {
-          name: "High",
-          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMaxCelsius : temperatureMaxFahrenheit,
-          color: "#FF0000"
+          name: "Temperature",
+          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureCelsius : temperatureFahrenheit,
+          color: "#556CBA"
         },
-        {
-          name: "Low",
-          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureMinCelsius : temperatureMinFahrenheit,
-          color: "#0000FF"
-        }
       ],
       chart: {
         id: "chartSmall",
@@ -184,11 +170,12 @@ export class AppComponent implements OnInit {
       },
       colors: ["#008FFB"],
       fill: {
-        type: "gradient",
+        type: 'gradient',
         gradient: {
-          opacityFrom: 0.91,
-          opacityTo: 0.1
-        }
+          opacityFrom: 0.1,
+          opacityTo: 0.9,
+        },
+        
       },
       xaxis: {
         type: "datetime",

@@ -46,10 +46,8 @@ public class TemperatureController {
     private TemperatureDTO temperatureToTemperatureDTO(Temperature temperature) {
         return TemperatureDTO.builder()
                 .id(temperature.getId())
-                .maxTempCelsius(temperature.getMaxTemp())
-                .minTempCelsius(temperature.getMinTemp())
-                .minTempFahrenheit(((temperature.getMinTemp()*9)/5)+32)
-                .maxTempFahrenheit(((temperature.getMaxTemp()*9)/5)+32)
+                .tempCelsius(temperature.getTemp())
+                .tempFahrenheit(((temperature.getTemp()*9)/5)+32)
                 .localDate(temperature.getDate())
                 .build();
     }
