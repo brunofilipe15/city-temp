@@ -21,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("city")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TemperatureController {
 
     @Autowired

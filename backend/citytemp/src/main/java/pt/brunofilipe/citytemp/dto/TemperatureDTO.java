@@ -1,6 +1,5 @@
 package pt.brunofilipe.citytemp.dto;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
