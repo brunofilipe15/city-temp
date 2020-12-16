@@ -51,8 +51,7 @@ export class AppComponent implements OnInit {
     {label: '2', value: 2},
     {label: '3', value: 3},
     {label: '4', value: 4},
-    {label: '5', value: 5},
-    {label: '6', value: 6}
+    {label: '5', value: 5}
   ];
   numberOfDaysSelect: SelectItem;
   numberOfDays: number;
@@ -115,8 +114,8 @@ export class AppComponent implements OnInit {
       this.temperatures.forEach(temperature => {
         let date = temperature.localDate;
         dates.push(date);
-        temperatureCelsius.push([date, temperature.tempCelsius]);
-        temperatureFahrenheit.push([date, temperature.tempFahrenheit]);
+        temperatureCelsius.push([date, Math.round(temperature.tempCelsius * 10) / 10]);
+        temperatureFahrenheit.push([date,  Math.round(temperature.tempFahrenheit * 10) / 10]);
       });
   
       this.chartBig = {
@@ -205,6 +204,8 @@ export class AppComponent implements OnInit {
   getTemperatureNow(city: City) {
     this.apiService.getNowTemperature(city.id).subscribe(temperatureNow => {
         this.temperatureNow = temperatureNow;
+        this.temperatureNow.tempFahrenheit = Math.round(temperatureNow.tempFahrenheit * 10) / 10;
+        this.temperatureNow.tempCelsius = Math.round(temperatureNow.tempCelsius * 10) / 10;
       },
     error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error ? 'Service Unavailable' : error.error.message })});    
   }

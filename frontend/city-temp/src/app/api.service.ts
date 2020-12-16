@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Temperature } from './temperature';
 import { City } from './city';
-import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
-import { MessageService } from 'primeng/api';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })

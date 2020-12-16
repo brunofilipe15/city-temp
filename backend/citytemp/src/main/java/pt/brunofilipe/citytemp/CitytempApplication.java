@@ -63,16 +63,9 @@ public class CitytempApplication {
 			for(int horas = 0; horas < 24; horas++) {
 				temperatureRepository.save(Temperature.builder().city(city)
 					.date(LocalDateTime.now(ZoneOffset.UTC).plusDays(dias).plusHours(horas))
-					.temp(round(40 + new Random().nextFloat() * (40 - 65)))
+					.temp(40 + new Random().nextFloat() * (40 - 65))
 					.build());
 			}
 		}
 	}
-
-	private Float round(double value) {
-		BigDecimal bd = new BigDecimal(Double.toString(value));
-		bd = bd.setScale(2, RoundingMode.HALF_UP);
-		return bd.floatValue();
-	}
-
 }

@@ -1,27 +1,19 @@
 package pt.brunofilipe.citytemp.controller;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pt.brunofilipe.citytemp.dao.CityRepository;
 import pt.brunofilipe.citytemp.dao.TemperatureRepository;
-import pt.brunofilipe.citytemp.dto.CityDTO;
 import pt.brunofilipe.citytemp.dto.TemperatureDTO;
 import pt.brunofilipe.citytemp.model.City;
 import pt.brunofilipe.citytemp.model.Temperature;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("city")
@@ -66,16 +58,9 @@ public class TemperatureController {
         return TemperatureDTO.builder()
                 .id(temperature.getId())
                 .tempCelsius(temperature.getTemp())
-                .tempFahrenheit((round((temperature.getTemp()*9)/5)+32))
+                .tempFahrenheit(((temperature.getTemp()*9)/5)+32)
                 .localDate(temperature.getDate())
                 .build();
     }
-
-    private Float round(Float value) {
-        BigDecimal bd = new BigDecimal(Double.toString(value));
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
-        return bd.floatValue();
-    }
-
 
 }
