@@ -20,5 +20,9 @@ export class ApiService {
   getCities(): Observable<City[]>{
     return this.httpClient.get<City[]>(this.apiURL+ '/city');
   }
+
+  getNowTemperature(cityId: number): Observable<Temperature>{
+    return this.httpClient.get<Temperature>(this.apiURL + '/city/' + cityId +'/temperature-now');
+  }
   
 }

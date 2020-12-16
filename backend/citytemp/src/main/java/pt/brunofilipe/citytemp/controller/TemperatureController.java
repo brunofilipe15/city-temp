@@ -51,6 +51,17 @@ public class TemperatureController {
         return temperatureDTOS;
     }
 
+    @GetMapping(value = "/{cityId}/temperature-now")
+    public TemperatureDTO getTemperatureInCities(@PathVariable Long cityId) {
+        City city = cityRepository.findById(cityId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND,"City not found"));
+
+        LocalDateTime date = LocalDateTime.now(ZoneOffset.UTC);
+        Temperature temperature = temperatureRepository.findLastByCityAndDateLessThanEqualOrderByDate(city, date)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"City not found"));
+        return temperatureToTemperatureDTO(temperature);
+    }
+
     private TemperatureDTO temperatureToTemperatureDTO(Temperature temperature) {
         return TemperatureDTO.builder()
                 .id(temperature.getId())

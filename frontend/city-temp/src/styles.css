@@ -1,4 +1,21 @@
 .citytemp-body {
-    background: rgb(34,193,195);
+    background: #2E7EA5;
     /*background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(85,111,186,1) 100%);*/
+}
+
+.custom-citiesOptions {
+    text-align: left;
+}
+.custom-unitOfTemperature {
+    text-align: right;
+}
+
+@media only screen and (max-width: 768px) {
+    .custom-citiesOptions {
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    .custom-unitOfTemperature {
+        text-align: center;
+    }
 }

@@ -1,26 +1,22 @@
 
 <div class="container">
-  <div class="row">
-    <div class="col-md-6 text-center" style="margin-top: 25px;">
-      <p-dropdown [options]="citiesOptions" [appendTo]="'body'" [(ngModel)]="city" (onChange)="onChangeCity($event)"></p-dropdown>
-    </div>
-    <div class="col-sm-6 text-center" style="margin-top: 25px;">
-      <p-selectButton [options]="unitOfTemperature" [(ngModel)]="unitOfTemperatureSelect" optionLabel="name" optionValue="value" (onChange)="onChangeUnitOfTemperature($event)"></p-selectButton>
-    </div>
-  </div>
+  
   <div class="row align-items-center h-100" style="margin-top: 25px;">
     <div class="col-10 mx-auto">
       <div class="jumbotron shadow-lg" style="padding-top: 16px; padding-bottom: 16px;">
-          <div class="row bg-white shadow-sm" style="margin-bottom: 15px;">
-            <div class="row">
-              <div class="col-md">
-              </div>
-            </div>
-            <div class="col-md-12 text-center" style="padding: 7px;"> 
-                <h4>33ºC</h4> 
-                <h6>15:18 15 December</h6> 
-            </div>
+        <div class="row " style="margin-bottom: 8px;">
+          <div class="col-md-6 custom-citiesOptions">
+            <p-dropdown [options]="citiesOptions" [appendTo]="'body'" [(ngModel)]="city" (onChange)="onChangeCity($event)" [style]="{'width':'50%'}"></p-dropdown>
           </div>
+          <div class="col-md-6 custom-unitOfTemperature">
+            <p-selectButton [options]="unitOfTemperature" [(ngModel)]="unitOfTemperatureSelect" optionLabel="name" optionValue="value" (onChange)="onChangeUnitOfTemperature($event)"></p-selectButton>
+          </div>
+        </div>
+        <div *ngIf="temperatureNow" class="card shadow-sm text-center" style="padding: 5px; margin-bottom: 7px;">
+          <h4 *ngIf="unitOfTemperatureSelect === UnitOfTemperatureEnum.CELSIUS">{{temperatureNow.tempCelsius}}ºC</h4> 
+          <h4 *ngIf="unitOfTemperatureSelect === UnitOfTemperatureEnum.FAHRENHEIT">{{temperatureNow.tempFahrenheit}}ºF</h4> 
+          <h6>{{temperatureNow.localDate | date:'medium'}}</h6>
+        </div>
           <div class="row">
             <div class="col-md-12 text-right">
               <h6>Number Of Days

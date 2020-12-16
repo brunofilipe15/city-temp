@@ -30,8 +30,8 @@ export type ChartOptions = {
 };
 
 export enum unitOfTemperatureEnum {
-  CELSIUS = 0,
-  FAHRENHEIT = 1
+  CELSIUS,
+  FAHRENHEIT
 }
 @Component({
   selector: 'app-root',
@@ -41,7 +41,6 @@ export enum unitOfTemperatureEnum {
 })
 export class AppComponent implements OnInit {
 
-  @ViewChild("chart") chart: ChartComponent;
   public chartBig: Partial<ChartOptions>;
   public chartSmall: Partial<ChartOptions>;
 
@@ -67,6 +66,9 @@ export class AppComponent implements OnInit {
   ];
   unitOfTemperatureSelect: any;
 
+  temperatureNow: Temperature;
+  UnitOfTemperatureEnum = unitOfTemperatureEnum;
+
   constructor(private apiService: ApiService,
     private messageService: MessageService) { }
 
@@ -80,8 +82,10 @@ export class AppComponent implements OnInit {
       this.city = this.citiesOptions[0].value;
       this.numberOfDays = this.numberOfDaysOptions[0].value;
       
+      this.getTemperatureNow(this.city);
       this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
-    }, error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message })});
+    }, error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error ? 'Service Unavailable' : error.error.message })});
+
   }
 
   onChangeNumberOfDays(event) {
@@ -91,6 +95,7 @@ export class AppComponent implements OnInit {
   
   onChangeCity(event) {
     this.city = event.value;
+    this.getTemperatureNow(this.city);
     this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
   }
 
@@ -194,7 +199,14 @@ export class AppComponent implements OnInit {
       };
       this.chartReady = true;
     },
-    error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message })});      
+    error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error ? 'Service Unavailable' : error.error.message })});      
+  }
+
+  getTemperatureNow(city: City) {
+    this.apiService.getNowTemperature(city.id).subscribe(temperatureNow => {
+        this.temperatureNow = temperatureNow;
+      },
+    error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error ? 'Service Unavailable' : error.error.message })});    
   }
 
 }
