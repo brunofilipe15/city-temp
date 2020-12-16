@@ -10,6 +10,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -23,9 +25,11 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     HttpClientModule,
     FormsModule,
     DropdownModule,
-    SelectButtonModule
+    SelectButtonModule,
+    ToastModule
   ],
-  providers: [ApiService],
+  providers: [
+    ApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

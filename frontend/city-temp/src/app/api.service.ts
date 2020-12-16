@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Temperature } from './temperature';
 import { City } from './city';
+import { Observable, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
+import { MessageService } from 'primeng/api';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,11 +13,12 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) {}
 
-  async getTemperatures(numberOfDays: number, cityId: number){
-    return await this.httpClient.get<Temperature[]>(this.apiURL + '/city/' + cityId +'/temperatures?numbersOfDays=' + numberOfDays).toPromise();
+  getTemperatures(numberOfDays: number, cityId: number): Observable<Temperature[]>{
+    return this.httpClient.get<Temperature[]>(this.apiURL + '/city/' + cityId +'/temperatures?numbersOfDays=' + numberOfDays);
   }
 
-  getCities() {
-    return this.httpClient.get<City[]>(this.apiURL+ '/city')
+  getCities(): Observable<City[]>{
+    return this.httpClient.get<City[]>(this.apiURL+ '/city');
   }
+  
 }

@@ -13,7 +13,7 @@ import {
   ApexLegend
 } from "ng-apexcharts";
 import { Temperature } from './temperature';
-import { SelectItem } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
 import { City } from './city';
 
 export type ChartOptions = {
@@ -36,7 +36,8 @@ export enum unitOfTemperatureEnum {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [MessageService]
 })
 export class AppComponent implements OnInit {
 
@@ -51,7 +52,8 @@ export class AppComponent implements OnInit {
     {label: '2', value: 2},
     {label: '3', value: 3},
     {label: '4', value: 4},
-    {label: '5', value: 5}
+    {label: '5', value: 5},
+    {label: '6', value: 6}
   ];
   numberOfDaysSelect: SelectItem;
   numberOfDays: number;
@@ -65,9 +67,10 @@ export class AppComponent implements OnInit {
   ];
   unitOfTemperatureSelect: any;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService,
+    private messageService: MessageService) { }
 
-  ngOnInit() {
+  ngOnInit() { 
     this.apiService.getCities().subscribe(cities => {
       cities.forEach(city => {
         this.citiesOptions.push({label: city.name, value: city});
@@ -78,7 +81,7 @@ export class AppComponent implements OnInit {
       this.numberOfDays = this.numberOfDaysOptions[0].value;
       
       this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
-    });
+    }, error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message })});
   }
 
   onChangeNumberOfDays(event) {
@@ -96,101 +99,102 @@ export class AppComponent implements OnInit {
     this.createCharts(this.numberOfDays, this.city.id, this.unitOfTemperatureSelect);
   }
 
-  async createCharts(numberOfDays: number, cityId: number, unitOfTemperature: unitOfTemperatureEnum) {
+  createCharts(numberOfDays: number, cityId: number, unitOfTemperature: unitOfTemperatureEnum) {
     this.chartReady = false;
     let temperatureCelsius = [];
     let temperatureFahrenheit = [];
     let dates = [];
     
-    this.temperatures = await this.apiService.getTemperatures(numberOfDays, cityId);
-    this.temperatures.forEach(temperature => {
-      let date = temperature.localDate;
-      dates.push(date);
-
-      temperatureCelsius.push([date, temperature.tempCelsius]);
-      temperatureFahrenheit.push([date, temperature.tempFahrenheit]);
-    });
-
-    this.chartBig = {
-      series: [
-        {
-          name: "Temperature",
-          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureCelsius : temperatureFahrenheit,
-          color: "#556CBA"
+    this.apiService.getTemperatures(numberOfDays, cityId).subscribe(temperatures => {
+      this.temperatures = temperatures;
+      this.temperatures.forEach(temperature => {
+        let date = temperature.localDate;
+        dates.push(date);
+        temperatureCelsius.push([date, temperature.tempCelsius]);
+        temperatureFahrenheit.push([date, temperature.tempFahrenheit]);
+      });
+  
+      this.chartBig = {
+        series: [
+          {
+            name: "Temperature",
+            data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureCelsius : temperatureFahrenheit,
+            color: "#556CBA"
+          },
+        ],
+        chart: {
+          id: "chartBig",
+          type: "line",
+          height: 230,
+          toolbar: {
+            autoSelected: "pan",
+            show: false
+          }
         },
-      ],
-      chart: {
-        id: "chartBig",
-        type: "line",
-        height: 230,
-        toolbar: {
-          autoSelected: "pan",
+        colors: ["#546E7A"],
+        stroke: {
+          curve: 'smooth',
+          width: 3
+        },
+        fill: {
+          opacity: 1
+        },
+        markers: {
+          size: 0
+        },
+        xaxis: {
+          type: "datetime"
+        }
+      };
+  
+      this.chartSmall = {
+        series: [
+          {
+            name: "Temperature",
+            data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureCelsius : temperatureFahrenheit,
+            color: "#556CBA"
+          },
+        ],
+        chart: {
+          id: "chartSmall",
+          height: 130,
+          type: "area",
+          brush: {
+            target: "chartBig",
+            enabled: true
+          },
+          selection: {
+            enabled: true,
+            xaxis: {
+              min: new Date(dates[0]).getTime(),
+              max: new Date(dates[dates.length - 1]).getTime()
+            }
+          }
+        },
+        colors: ["#008FFB"],
+        fill: {
+          type: 'gradient',
+          gradient: {
+            opacityFrom: 1,
+            opacityTo: 0.1,
+          },
+        },
+        xaxis: {
+          type: "datetime",
+          tooltip: {
+            enabled: false
+          }
+        },
+        yaxis: {
+          tickAmount: 2
+        },
+        legend: {
           show: false
         }
-      },
-      colors: ["#546E7A"],
-      stroke: {
-        curve: 'smooth',
-        width: 3
-      },
-      fill: {
-        opacity: 1
-      },
-      markers: {
-        size: 0
-      },
-      xaxis: {
-        type: "datetime"
-      }
-    };
-
-    this.chartSmall = {
-      series: [
-        {
-          name: "Temperature",
-          data: unitOfTemperature === unitOfTemperatureEnum.CELSIUS ? temperatureCelsius : temperatureFahrenheit,
-          color: "#556CBA"
-        },
-      ],
-      chart: {
-        id: "chartSmall",
-        height: 130,
-        type: "area",
-        brush: {
-          target: "chartBig",
-          enabled: true
-        },
-        selection: {
-          enabled: true,
-          xaxis: {
-            min: new Date(dates[0]).getTime(),
-            max: new Date(dates[dates.length - 1]).getTime()
-          }
-        }
-      },
-      colors: ["#008FFB"],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          opacityFrom: 1,
-          opacityTo: 0.1,
-        },
-      },
-      xaxis: {
-        type: "datetime",
-        tooltip: {
-          enabled: false
-        }
-      },
-      yaxis: {
-        tickAmount: 2
-      },
-      legend: {
-        show: false
-      }
-    };
-
-    this.chartReady = true;
+      };
+      this.chartReady = true;
+    },
+    error => { this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error.message })});      
   }
 
 }

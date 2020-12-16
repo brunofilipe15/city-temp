@@ -2,7 +2,9 @@ package pt.brunofilipe.citytemp.controller;
 
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import pt.brunofilipe.citytemp.dao.CityRepository;
 import pt.brunofilipe.citytemp.dao.TemperatureRepository;
 import pt.brunofilipe.citytemp.dto.CityDTO;
@@ -33,13 +35,17 @@ public class TemperatureController {
     private TemperatureRepository temperatureRepository;
 
     @GetMapping(value = "/{cityId}/temperatures")
-    public List<TemperatureDTO> getAllCities(@PathVariable Long cityId, @RequestParam @Min(1) @Max(5) Long numbersOfDays)
-            throws NotFoundException {
-        City city = cityRepository.findById(cityId).orElseThrow(() -> new NotFoundException("City not found"));
+    public List<TemperatureDTO> getAllCities(@PathVariable Long cityId, @RequestParam Long numbersOfDays) {
+        if (numbersOfDays < 1 || numbersOfDays > 5) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid numbers of days");
+        }
+        City city = cityRepository.findById(cityId).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND,"City not found"));
         List<TemperatureDTO> temperatureDTOS = new ArrayList<>();
         LocalDateTime startDate = LocalDateTime.now(ZoneOffset.UTC);
         LocalDateTime endDate = LocalDateTime.now(ZoneOffset.UTC).plusDays(numbersOfDays);
-        for (Temperature temperature : temperatureRepository.findAllByCityAndDateGreaterThanEqualAndDateLessThanEqual(city, startDate, endDate)) {
+        for (Temperature temperature : temperatureRepository.findAllByCityAndDateGreaterThanEqualAndDateLessThanEqual(
+                city, startDate, endDate)) {
             temperatureDTOS.add(temperatureToTemperatureDTO(temperature));
         }
         return temperatureDTOS;
