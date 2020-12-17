@@ -43,7 +43,6 @@ export class AppComponent implements OnInit {
   public chartBig: Partial<ChartOptions>;
   public chartSmall: Partial<ChartOptions>;
 
-  temperatures: Temperature[];
   chartReady = false;
   numberOfDaysOptions = [
     { label: '1', value: 1 },
@@ -73,7 +72,7 @@ export class AppComponent implements OnInit {
   dates = [];
 
   constructor(private apiService: ApiService,
-    private messageService: MessageService) { }
+              private messageService: MessageService) { }
 
   ngOnInit() {
     this.apiService.getCities().subscribe(cities => {
@@ -113,8 +112,7 @@ export class AppComponent implements OnInit {
     this.temperatureCelsius = [];
     this.temperatureFahrenheit = [];
     this.apiService.getTemperatures(this.numberOfDays, this.city.id).subscribe(temperatures => {
-      this.temperatures = temperatures;
-      this.temperatures.forEach(temperature => {
+      temperatures.forEach(temperature => {
         let date = temperature.localDate;
         this.dates.push(date);
         this.temperatureCelsius.push([date, this.roundNumber(temperature.tempCelsius)]);
