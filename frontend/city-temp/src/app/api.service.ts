@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  apiURL: string = 'http://localhost:8080';
+  apiURL: string = 'http://35.223.247.138:8080';
 
   constructor(private httpClient: HttpClient) {}
 
