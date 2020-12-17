@@ -59,7 +59,7 @@ public class CitytempApplication {
 	}
 
 	private void createTemperatures(City city, TemperatureRepository temperatureRepository) {
-		for(int dias = 0; dias < 5; dias++) { // Previsão para 5 dias
+		for(int dias = 0; dias < 25; dias++) { // Previsão para 25 dias
 			for(int horas = 0; horas < 24; horas++) {
 				temperatureRepository.save(Temperature.builder().city(city)
 					.date(LocalDateTime.now(ZoneOffset.UTC).plusDays(dias).plusHours(horas))
